@@ -1,0 +1,368 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+<title>Living Purim Card • WIZO California</title>
+
+<meta property="og:title" content="Happy Purim • WIZO California" />
+<meta property="og:description" content="Donate, then sign the living community card" />
+<meta property="og:type" content="website" />
+<meta property="og:image" content="/assets/og.png" />
+<meta name="twitter:card" content="summary_large_image" />
+
+<meta name="theme-color" content="#0B3C5D" />
+<link rel="manifest" href="/manifest.webmanifest" />
+<link rel="apple-touch-icon" href="/assets/icon-192.png" />
+
+<style>
+  :root{
+    --bg:#fbf6ea;
+    --ink:#102A43;
+    --muted:#52606D;
+    --brand:#0B3C5D;
+    --gold:#C9A24D;
+    --line:rgba(16,42,67,.12);
+    --shadow:0 18px 50px rgba(16,42,67,.14);
+    --shadow2:0 10px 26px rgba(16,42,67,.12);
+    --w: 740px;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0;
+    font-family:-apple-system,BlinkMacSystemFont,Inter,Segoe UI,Roboto,Helvetica,Arial,sans-serif;
+    color:var(--ink);
+    background:
+      radial-gradient(1100px 700px at 20% 10%, rgba(201,162,77,.18), transparent 60%),
+      radial-gradient(900px 650px at 85% 20%, rgba(11,60,93,.14), transparent 58%),
+      var(--bg);
+  }
+  .wrap{max-width:var(--w); margin:0 auto; padding:16px 14px 40px;}
+
+  .card{position:relative; border-radius:28px; overflow:hidden; box-shadow:var(--shadow); border:1px solid var(--line); background:#fff;}
+  .bg{width:100%; display:block;}
+
+  .confetti{position:absolute; inset:0; pointer-events:none; overflow:hidden;}
+  .dot{position:absolute; width:10px; height:10px; border-radius:999px; opacity:.9;
+    filter: drop-shadow(0 8px 14px rgba(16,42,67,.12)); animation: floaty 7.2s ease-in-out infinite;
+  }
+  @keyframes floaty{0%{transform:translateY(0) translateX(0) scale(1);}50%{transform:translateY(-16px) translateX(10px) scale(1.06);}100%{transform:translateY(0) translateX(0) scale(1);}}
+
+  .burst{
+    position:absolute; width:8px; height:8px; border-radius:999px;
+    opacity:1;
+    animation: burst 900ms ease-out forwards;
+    filter: drop-shadow(0 10px 18px rgba(16,42,67,.18));
+  }
+  @keyframes burst{
+    0%   { transform: translate(0,0) scale(1); opacity:1; }
+    100% { transform: translate(var(--dx), var(--dy)) scale(.85); opacity:0; }
+  }
+
+  .wallWindow{position:absolute; left:8%; right:8%; top:36%; bottom:10%; padding:48px 16px 14px; border-radius:24px; overflow:hidden;}
+  .marquee{position:absolute; inset:48px 8px 8px 8px; overflow:hidden;
+    mask-image: linear-gradient(to bottom, transparent 0%, black 10%, black 90%, transparent 100%);
+  }
+  .track{display:flex; flex-direction:column; gap:10px; will-change:transform;}
+  .sig{background:rgba(255,255,255,.90); border:1px solid rgba(11,60,93,.14); border-radius:999px; padding:10px 12px;
+    box-shadow:0 6px 18px rgba(16,42,67,.08); display:flex; align-items:center; gap:10px;
+  }
+  .bubble{width:10px; height:10px; border-radius:999px; background: linear-gradient(180deg, var(--gold), #b98c33);}
+  .name{font-weight:900; color:var(--brand);}
+  .msg{color:rgba(16,42,67,.78); font-size:13px; line-height:1.2;}
+
+  .sig.highlight {
+    animation: highlightPulse 2s ease-out;
+    border-color: rgba(201,162,77,.9);
+    box-shadow: 0 0 0 2px rgba(201,162,77,.35), 0 10px 26px rgba(201,162,77,.35);
+  }
+  @keyframes highlightPulse {
+    0%   { transform: scale(1.03); background: rgba(255,245,220,.95); }
+    60%  { transform: scale(1.01); }
+    100% { transform: scale(1); background: rgba(255,255,255,.90); }
+  }
+
+  .actions{margin-top:14px; display:grid; grid-template-columns:1fr 1fr; gap:10px;}
+  @media (max-width:520px){ .actions{grid-template-columns:1fr;} }
+  .btn{appearance:none; border:0; cursor:pointer; padding:14px 14px; border-radius:18px; font-weight:950; letter-spacing:.2px;
+    box-shadow:var(--shadow2); display:flex; align-items:center; justify-content:center; gap:10px;
+    background:#fff; border:1px solid var(--line); text-decoration:none; color:inherit;
+  }
+  .btn.primary{background:linear-gradient(180deg, #D9B15A, #C0953F); color:#1b1b1b; border-color:transparent;}
+  .hint{margin-top:10px; text-align:center; color:var(--muted); font-size:13px;}
+  .footer{text-align:center; margin-top:12px; color:var(--muted); font-size:12px;}
+
+  .toast{position:fixed; left:50%; bottom:18px; transform:translateX(-50%);
+    background:rgba(255,255,255,.94); border:1px solid rgba(11,60,93,.18); box-shadow:var(--shadow2);
+    padding:10px 12px; border-radius:999px; font-weight:850; color:var(--brand); display:none;
+  }
+
+  .modal{position:fixed; inset:0; display:none; align-items:flex-end; justify-content:center;
+    background:rgba(16,42,67,.40); backdrop-filter: blur(6px); padding:16px;
+  }
+  .sheet{width:min(740px, 100%); border-radius:22px; background:rgba(255,255,255,.94);
+    border:1px solid var(--line); box-shadow:var(--shadow); padding:14px;
+  }
+  .sheetTop{display:flex; align-items:center; justify-content:space-between; gap:10px;}
+  .sheetTop b{color:var(--brand); font-size:16px;}
+  .x{border:1px solid var(--line); background:#fff; border-radius:12px; padding:10px 12px; font-weight:900; cursor:pointer;}
+  form{display:grid; gap:10px; margin-top:10px;}
+  input, textarea{width:100%; padding:12px 12px; border-radius:14px; border:1px solid var(--line); background:#fff; font:inherit; outline:none;}
+  textarea{min-height:84px; resize:vertical;}
+  .success{display:none; margin-top:10px; padding:12px; border-radius:16px;
+    border:1px solid rgba(11,60,93,.18); background:rgba(255,255,255,.90); color:var(--brand); font-weight:950; text-align:center;
+  }
+</style>
+</head>
+
+<body>
+<!-- Netlify Forms detection (hidden) -->
+<form name="purim-signatures" data-netlify="true" netlify-honeypot="bot-field" hidden>
+  <input type="hidden" name="form-name" value="purim-signatures" />
+  <input name="display_name" />
+  <textarea name="message"></textarea>
+</form>
+
+<div class="wrap">
+  <div class="card" aria-label="Living Purim card" id="card">
+    <img class="bg" src="/assets/card-bg-portrait.png" alt="Happy Purim card" />
+    <div class="confetti" id="confetti"></div>
+    <div class="wallWindow">
+      <div class="marquee" aria-label="Live signatures">
+        <div class="track" id="track"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="actions">
+    <button class="btn primary" id="donateSign">🎁 Donate & Sign</button>
+    <button class="btn" id="share">📲 Share</button>
+  </div>
+
+  <div class="hint">Donate first → then add your name to the living card.</div>
+  <div class="footer">From WIZO California</div>
+</div>
+
+<div class="toast" id="toast">Return here to sign the card ✍️</div>
+
+<div class="modal" id="modal" role="dialog" aria-modal="true" aria-label="Sign the card">
+  <div class="sheet">
+    <div class="sheetTop">
+      <b>Sign the card</b>
+      <button class="x" id="close">✕</button>
+    </div>
+
+    <div class="success" id="signedOk">You’re on the card! Chag Sameach 🎭</div>
+
+    <form name="purim-signatures" method="POST" data-netlify="true" netlify-honeypot="bot-field" id="sigForm" action="/thanks.html">
+      <input type="hidden" name="form-name" value="purim-signatures" />
+      <p style="display:none"><label>Don’t fill this out: <input name="bot-field" /></label></p>
+
+      <input name="display_name" id="display_name" placeholder="Name to show (e.g., The Smith Family)" required />
+      <textarea name="message" id="message" placeholder="Message (optional)" maxlength="120"></textarea>
+
+      <button class="btn primary" type="submit">✅ Add my name</button>
+    </form>
+  </div>
+</div>
+
+<script>
+  const DONATE_URL = "https://wizocalifornia.org/donate/";
+  const LIVE_FEED_URL = "/.netlify/functions/signatures";
+  const FLAG = "purim_donate_then_sign_pending";
+
+  function confettiBurst() {
+    const el = document.getElementById("confetti");
+    const colors = ["#0B3C5D","#C9A24D","#C0953F"];
+    const cx = 50 + Math.random()*10;
+    const cy = 55 + Math.random()*10;
+    for(let i=0;i<18;i++) {
+      const p = document.createElement("div");
+      p.className = "burst";
+      const s = 6 + Math.random()*6;
+      p.style.width = s+"px"; p.style.height = s+"px";
+      p.style.left = cx + "%";
+      p.style.top  = cy + "%";
+      p.style.background = colors[Math.floor(Math.random()*colors.length)];
+      p.style.setProperty("--dx", (Math.random()*220 - 110) + "px");
+      p.style.setProperty("--dy", (Math.random()*180 - 140) + "px");
+      el.appendChild(p);
+      setTimeout(()=>p.remove(), 1000);
+    }
+  }
+
+  (function makeConfetti(){
+    const el = document.getElementById("confetti");
+    const colors = ["#0B3C5D","#C9A24D","#0B3C5D","#C0953F"];
+    const dots = 30;
+    for(let i=0;i<dots;i++) {
+      const d = document.createElement("div");
+      d.className = "dot";
+      const s = 6 + Math.random()*10;
+      d.style.width = s+"px"; d.style.height=s+"px";
+      d.style.left = (Math.random()*100)+"%";
+      d.style.top  = (Math.random()*100)+"%";
+      d.style.background = colors[Math.floor(Math.random()*colors.length)];
+      d.style.animationDelay = (Math.random()*2.5)+"s";
+      d.style.animationDuration = (6 + Math.random()*4.2) + "s";
+      el.appendChild(d);
+    }
+  })();
+
+  function escapeHtml(s) {
+    return (s||"").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+  }
+  function uniqByKey(arr) {
+    const seen = new Set();
+    const out = [];
+    for(const it of arr) {
+      const name = (it.name||"").trim();
+      const msg  = (it.msg||"").trim();
+      if(!name) continue;
+      const k = (name+"|"+msg).toLowerCase();
+      if(seen.has(k)) continue;
+      seen.add(k);
+      out.push({name, msg});
+    }
+    return out;
+  }
+  function render(items) {
+    const track = document.getElementById("track");
+    track.innerHTML = "";
+    items.forEach((it, idx) => {
+      const row = document.createElement("div");
+      row.className = "sig" + (idx===0 ? " highlight" : "");
+      row.innerHTML = `<span class="bubble"></span>
+        <div>
+          <div class="name">${escapeHtml(it.name)}</div>
+          <div class="msg">${escapeHtml(it.msg||"")}</div>
+        </div>`;
+      track.appendChild(row);
+    });
+  }
+
+  let raf, startTs=0, speed=14, pausedUntil=0;
+  function startMarquee(resetToTop=false) {
+    const track = document.getElementById("track");
+    cancelAnimationFrame(raf);
+    startTs = 0;
+    if(resetToTop) track.style.transform = "translateY(0px)";
+    const tick = (ts) => {
+      if(!startTs) startTs = ts;
+      const now = performance.now();
+      const t = (ts - startTs)/1000;
+      const h = track.scrollHeight/2;
+      if(h > 0 && now >= pausedUntil) {
+        const y = (t*speed) % h;
+        track.style.transform = `translateY(${-y}px)`;
+      }
+      raf = requestAnimationFrame(tick);
+    };
+    raf = requestAnimationFrame(tick);
+  }
+
+  async function loadAll(resetToTop=false) {
+    let live = [];
+    try {
+      const res = await fetch(LIVE_FEED_URL, {cache:"no-store"});
+      if(res.ok) {
+        const j = await res.json();
+        if(Array.isArray(j.signatures)) {
+          live = j.signatures.map(x => ({name:x.name, msg:x.msg || x.message || ""}));
+        }
+      }
+    } catch(e){}
+    const local = JSON.parse(localStorage.getItem("purim_sigs") || "[]");
+    const merged = uniqByKey([...local, ...live]);
+    const doubled = merged.concat(merged);
+    render(doubled);
+    startMarquee(resetToTop);
+  }
+
+  async function sharePage() {
+    const url = location.href;
+    const text = "Happy Purim! Donate and add your name to this living community card 💙";
+    if(navigator.share) {
+      try { await navigator.share({title:"Happy Purim", text, url}); return; } catch(e) {}
+    }
+    try { await navigator.clipboard.writeText(url); alert("Link copied!"); }
+    catch(e) { alert(url); }
+  }
+  document.getElementById("share").addEventListener("click", sharePage);
+
+  const toast = document.getElementById("toast");
+  function showToast(msg) {
+    toast.textContent = msg;
+    toast.style.display = "block";
+    setTimeout(()=> toast.style.display = "none", 3200);
+  }
+
+  const modal = document.getElementById("modal");
+  document.getElementById("close").addEventListener("click", () => modal.style.display="none");
+  modal.addEventListener("click", (e) => { if(e.target === modal) modal.style.display="none"; });
+
+  document.getElementById("donateSign").addEventListener("click", () => {
+    localStorage.setItem(FLAG, "1");
+    window.open(DONATE_URL, "_blank", "noopener");
+    showToast("Return here to sign the card ✍️");
+  });
+
+  function openIfPending() {
+    if(localStorage.getItem(FLAG)==="1") {
+      localStorage.removeItem(FLAG);
+      modal.style.display = "flex";
+    }
+  }
+  window.addEventListener("focus", openIfPending);
+  window.addEventListener("pageshow", openIfPending);
+
+  async function postToSharedAPI(name, msg){
+    const res = await fetch("/.netlify/functions/sign", {
+      method:"POST",
+      headers:{ "content-type":"application/json" },
+      body: JSON.stringify({ name, msg })
+    });
+    return res;
+  }
+
+  document.getElementById("sigForm").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    const form = e.currentTarget;
+    const name = (document.getElementById("display_name").value||"").trim();
+    const msg  = (document.getElementById("message").value||"").trim();
+    if(!name) return;
+
+    // Optimistic: show immediately on THIS device, even if network is slow
+    const local = JSON.parse(localStorage.getItem("purim_sigs") || "[]");
+    local.unshift({name, msg});
+    localStorage.setItem("purim_sigs", JSON.stringify(local));
+
+    confettiBurst();
+    const ok = document.getElementById("signedOk");
+    ok.style.display = "block";
+    setTimeout(() => ok.style.display = "none", 2200);
+
+    pausedUntil = performance.now() + 1900;
+    await loadAll(true);
+
+    setTimeout(() => { modal.style.display = "none"; }, 950);
+    try{ form.reset(); } catch(e){}
+
+    // Now send to shared store (everyone sees it)
+    try{
+      await postToSharedAPI(name, msg);
+      // refresh from shared after a short beat
+      setTimeout(() => loadAll(false), 900);
+    } catch(err){}
+  });
+
+  if("serviceWorker" in navigator) {
+    window.addEventListener("load", () => navigator.serviceWorker.register("/sw.js").catch(()=>{}));
+  }
+
+  loadAll();
+</script>
+</body>
+</html>
