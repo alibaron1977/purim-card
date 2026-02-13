@@ -387,10 +387,14 @@
       showToast("Couldn’t save to the shared wall (try again)");
     }
   });
-
-  if("serviceWorker" in navigator) {
-    window.addEventListener("load", () => navigator.serviceWorker.register("/sw.js").catch(()=>{}));
+<script>
+  // TEMP FIX: kill old service worker caches so the latest code runs
+  if ("serviceWorker" in navigator) {
+    navigator.serviceWorker.getRegistrations()
+      .then(rs => rs.forEach(r => r.unregister()))
+      .catch(()=>{});
   }
+</script>
 
   loadAll();
 </script>
