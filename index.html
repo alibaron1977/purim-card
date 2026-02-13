@@ -328,10 +328,18 @@
   modal.addEventListener("click", (e) => { if(e.target === modal) modal.style.display="none"; });
 
   document.getElementById("donateSign").addEventListener("click", () => {
-    localStorage.setItem(FLAG, "1");
-    window.open(DONATE_URL, "_blank", "noopener");
-    showToast("Return here to sign the card ✍️");
-  });
+  localStorage.setItem(FLAG, "1");
+
+  // Open donation page
+  window.open(DONATE_URL, "_blank", "noopener");
+
+  showToast("Donate, then sign the card ✍️");
+
+  // Open the sign form automatically (reliable on mobile)
+  setTimeout(() => {
+    modal.style.display = "flex";
+  }, 900);
+});
 
   function openIfPending() {
     if(localStorage.getItem(FLAG)==="1") {
