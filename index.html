@@ -139,6 +139,7 @@
     <button class="btn" id="share">📲 Share</button>
   </div>
 
+  <div class="hint" style="margin-top:6px;font-weight:950;color:var(--brand);">Chag Sameach! Happy Purim 🎭</div>
   <div class="hint">Donate first → then add your name to the living card.</div>
   <div class="footer">From WIZO California</div>
 </div>
@@ -263,6 +264,7 @@
 
   async function loadAll(resetToTop=false) {
     let live = [];
+    // 1) try shared function
     try {
       const res = await fetch(LIVE_FEED_URL, {cache:"no-store"});
       if(res.ok) {
@@ -272,8 +274,32 @@
         }
       }
     } catch(e){}
+
+    // 2) fallback demo file (so wall never looks empty)
+    if(!live || live.length === 0){
+      try{
+        const res2 = await fetch("/data/signatures.json", {cache:"no-store"});
+        if(res2.ok){
+          const j2 = await res2.json();
+          if(Array.isArray(j2.signatures)){
+            live = j2.signatures.map(x => ({name:x.name, msg:x.msg || x.message || ""}));
+          }
+        }
+      }catch(e){}
+    }
+
+    // 3) merge in local optimistic signatures for THIS device
     const local = JSON.parse(localStorage.getItem("purim_sigs") || "[]");
-    const merged = uniqByKey([...local, ...live]);
+    let merged = uniqByKey([...(local||[]), ...(live||[])]);
+
+    // 4) starter state if still empty
+    if(merged.length === 0){
+      merged = [
+        { name: "WIZO California", msg: "Chag Sameach! 🎭" },
+        { name: "Be the first to sign", msg: "Donate, then add your name to our living wall of love 💙" }
+      ];
+    }
+
     const doubled = merged.concat(merged);
     render(doubled);
     startMarquee(resetToTop);

@@ -1,12 +1,12 @@
 {
   "signatures": [
     {
-      "name": "Person X (Example)",
-      "msg": "Donated & signed with love \ud83d\udc99"
-    },
-    {
       "name": "WIZO California",
       "msg": "Chag Sameach! \ud83c\udfad"
+    },
+    {
+      "name": "Person X (Example)",
+      "msg": "Donated & signed with love \ud83d\udc99"
     }
   ]
 }
