@@ -77,14 +77,17 @@ export async function handler(event) {
       },
       body: JSON.stringify({ ok: true, signatures })
     };
-  } catch (err) {
-    return {
-      statusCode: 500,
-      headers: {
-        "access-control-allow-origin": "*",
-        "content-type": "application/json; charset=utf-8"
-      },
-      body: JSON.stringify({ error: "Server error", detail: String(err?.message || err) })
-    };
-  }
+} catch (err) {
+  return {
+    statusCode: 500,
+    headers: {
+      "access-control-allow-origin": "*",
+      "content-type": "application/json; charset=utf-8",
+      "cache-control": "no-store"
+    },
+    body: JSON.stringify({
+      error: "Server error",
+      detail: String(err && (err.stack || err.message) || err)
+    })
+  };
 }
